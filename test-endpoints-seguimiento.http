@@ -1,0 +1,46 @@
+### Crear seguimiento de tareas
+POST http://localhost:3000/api/proyectos/1/seguimiento/tareas
+Content-Type: application/json
+
+{
+  "fecha": "2025-10-01",
+  "dia": 1,
+  "tareas_realizadas": 3,
+  "comentario": "Inicio de obra"
+}
+
+### Obtener seguimientos de tareas
+GET http://localhost:3000/api/proyectos/1/seguimiento/tareas
+
+### Actualizar seguimiento de tareas
+PUT http://localhost:3000/api/proyectos/1/seguimiento/tareas/1
+Content-Type: application/json
+
+{
+  "tareas_realizadas": 4
+}
+
+### Eliminar seguimiento de tareas
+DELETE http://localhost:3000/api/proyectos/1/seguimiento/tareas/1
+
+### Registrar uso de material
+POST http://localhost:3000/api/proyectos/1/seguimiento/materiales/1/uso
+Content-Type: application/json
+
+{
+  "fecha": "2025-10-01",
+  "cantidad_usada": 5,
+  "comentario": "Usado en cimentación"
+}
+
+### Obtener logs de materiales
+GET http://localhost:3000/api/proyectos/1/seguimiento/materiales
+
+### Obtener logs de un material
+GET http://localhost:3000/api/proyectos/1/seguimiento/materiales/1
+
+### Avance del proyecto
+GET http://localhost:3000/api/proyectos/1/seguimiento/avance
+
+### Manifiesto PDF
+GET http://localhost:3000/api/proyectos/1/seguimiento/manifiesto.pdf

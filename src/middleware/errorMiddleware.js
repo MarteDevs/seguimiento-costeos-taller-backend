@@ -7,7 +7,10 @@ const notFound = (req, res, next) => {
 
 // Middleware para manejo de errores
 const errorHandler = (err, req, res, next) => {
-  let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  // Usa el statusCode del error si está presente; de lo contrario, conserva el de la respuesta
+  let statusCode = typeof err.statusCode === 'number'
+    ? err.statusCode
+    : (res.statusCode === 200 ? 500 : res.statusCode);
   let message = err.message;
 
   // Error de MySQL - Clave duplicada

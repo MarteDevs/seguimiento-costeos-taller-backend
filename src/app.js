@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const { errorHandler, notFound } = require('./middleware/errorMiddleware');
 const proyectoRoutes = require('./routes/proyectoRoutes');
+const seguimientoRoutes = require('./routes/seguimientoRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas principales
 app.use('/api/proyectos', proyectoRoutes);
+// Rutas de seguimiento (definen rutas absolutas /api/... dentro del router)
+app.use(seguimientoRoutes);
 
 // Ruta de salud del servidor
 app.get('/health', (req, res) => {
