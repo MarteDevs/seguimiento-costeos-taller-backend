@@ -170,13 +170,20 @@ async function generarManifiestoExcel(proyecto, resumen, avance, logsMateriales,
 
   const wsCharts = wb.addWorksheet('Graficos');
   wsCharts.getRow(1).values = ['Gráfico de Avance Físico']; wsCharts.getRow(1).font = sectionTitleStyle;
-  const imgFisico = await renderChartImage('Avance Físico %', s.fisico || [], '#2E86C1');
+  const fisicoPoints = (s.fisico && s.fisico.length > 0)
+    ? s.fisico
+    : [{ date: new Date().toISOString().slice(0,10), pct: Number((avance?.tareas?.avanceTareasPct ?? avance?.dias?.avanceDiasPct ?? 0)) }];
+  const imgFisico = await renderChartImage('Avance Físico %', fisicoPoints, '#2E86C1');
   if (imgFisico && imgFisico.length > 0) {
     const imageId = wb.addImage({ buffer: imgFisico, extension: 'png' });
     wsCharts.addImage(imageId, { tl: { col: 0, row: 1 }, ext: { width: 800, height: 320 } });
   }
   wsCharts.getRow(20).values = ['Gráfico de Avance Financiero']; wsCharts.getRow(20).font = sectionTitleStyle;
-  const imgFin = await renderChartImage('Avance Financiero %', s.financiero || [], '#28B463');
+  const presupuestoVal = Number(proyecto?.habilitado_estimado || 0);
+  const finPoints = (s.financiero && s.financiero.length > 0)
+    ? s.financiero
+    : [{ date: new Date().toISOString().slice(0,10), pct: presupuestoVal > 0 ? Math.min(100, Math.round((Number(resumen?.costo_total || 0) / presupuestoVal) * 100)) : 0 }];
+  const imgFin = await renderChartImage('Avance Financiero %', finPoints, '#28B463');
   if (imgFin && imgFin.length > 0) {
     const imageId2 = wb.addImage({ buffer: imgFin, extension: 'png' });
     wsCharts.addImage(imageId2, { tl: { col: 0, row: 20 }, ext: { width: 800, height: 320 } });
