@@ -69,4 +69,7 @@ router.get('/api/proyectos/:id/seguimiento/avance', validateProyectoId, Seguimie
 // PDF Manifiesto
 router.get('/api/proyectos/:id/seguimiento/manifiesto.pdf', validateProyectoId, SeguimientoController.generarManifiestoPDF);
 
+// Excel Manifiesto
+router.get('/api/proyectos/:id/seguimiento/manifiesto.xlsx', validateProyectoId, SeguimientoController.generarManifiestoExcel);
+
 module.exports = router;
