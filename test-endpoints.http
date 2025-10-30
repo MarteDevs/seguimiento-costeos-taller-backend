@@ -1,207 +1,215 @@
-### BACKEND SEGUIMIENTO Y COSTEO - PRUEBAS DE ENDPOINTS
-### Base URL: http://localhost:3000/api
+### BACKEND SEGUIMIENTO Y COSTEO - PRUEBAS DE ENDPOINTS (VALIDADAS)
 
-### 1. Health Check
-GET http://localhost:3000/health
+@base = http://localhost:3000
 
-### 2. PROYECTOS - Crear nuevo proyecto
-POST http://localhost:3000/api/proyectos
+### =======================================================
+### 1. HEALTH CHECK
+### =======================================================
+GET {{base}}/health
+
+### =======================================================
+### 2. GESTIÓN DE PROYECTO COMPLETO
+### =======================================================
+
+# @name crearProyecto
+### 2.1 PROYECTOS - Crear un nuevo proyecto de prueba
+POST {{base}}/api/proyectos
 Content-Type: application/json
 
 {
-  "fecha": "2024-01-15",
-  "nombre_del_proyecto": "Proyecto de Prueba",
-  "mina": "Mina A",
-  "equipo": "Equipo 1",
-  "habilitado_estimado": 100,
-  "días_trabajados": 20,
-  "números_de_trabajadores_por_dia": 10,
-  "numero_de_tareas_por_dia": 5
+  "fecha": "2024-07-20",
+  "nombre_del_proyecto": "Expansión Mina Jupiter",
+  "mina": "Mina Jupiter",
+  "equipo": "Equipo Gamma",
+  "habilitado_estimado": 150000,
+  "días_trabajados": 90,
+  "números_de_trabajadores_por_dia": 25,
+  "numero_de_tareas_por_dia": 10
 }
 
-### 3. PROYECTOS - Obtener todos los proyectos
-GET http://localhost:3000/api/proyectos
+@proyectoId = {{crearProyecto.response.body.data.id}}
 
-### 4. PROYECTOS - Obtener proyecto por ID
-GET http://localhost:3000/api/proyectos/1
+### 2.2 PROYECTOS - Obtener todos los proyectos
+GET {{base}}/api/proyectos
 
-### 5. PROYECTOS - Obtener resumen completo del proyecto
-GET http://localhost:3000/api/proyectos/1/resumen
+### 2.3 PROYECTOS - Obtener el proyecto recién creado por ID
+GET {{base}}/api/proyectos/{{proyectoId}}
 
-### 6. PROYECTOS - Actualizar proyecto
-PUT http://localhost:3000/api/proyectos/1
+### =======================================================
+### 3. AÑADIR COSTOS AL PROYECTO (TODAS LAS TABLAS)
+### =======================================================
+
+# @name crearManoObra
+### 3.1 MANO DE OBRA (Costo Fijo)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/mano-obra
 Content-Type: application/json
 
 {
-  "fecha": "2024-02-01",
-  "nombre_del_proyecto": "Proyecto Actualizado",
-  "mina": "Mina B",
-  "equipo": "Equipo 2",
-  "habilitado_estimado": 120,
-  "días_trabajados": 25,
-  "números_de_trabajadores_por_dia": 12,
-  "numero_de_tareas_por_dia": 6
+  "trabajador": "Jefe de Proyecto",
+  "cantidad_trabajador": 1,
+  "precio": 350.00,
+  "dias_trabajados": 90
 }
 
-### 7. MANO DE OBRA - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/mano-obra
+@manoObraId = {{crearManoObra.response.body.data.id}}
+
+### 3.2 LOCAL (Costo Fijo)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/local
 Content-Type: application/json
 
 {
-  "trabajador": "Operario",
-  "cantidad_trabajador": 2,
-  "precio": 150.50,
-  "dias_trabajados": 10
+  "descripcion": "Alquiler de campamento minero",
+  "promedio": 30,
+  "precio_unitario": 10000.00,
+  "dias_trabajados": 90
 }
 
-### 8. MANO DE OBRA - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/mano-obra
-
-### 9. MATERIALES - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/materiales
+### 3.3 VIGILANCIA (Costo Fijo)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/vigilancia
 Content-Type: application/json
 
 {
-  "descripcion": "Cemento Portland",
-  "cantidad": 100,
-  "precio_unitario": 250.00,
-  "unidad": "bulto"
+  "descripcion": "Servicio de vigilancia perimetral 24/7",
+  "promedio": 30,
+  "precio_unitario": 5000.00,
+  "dias_trabajados": 90
 }
 
-### 10. MATERIALES - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/materiales
-
-### 11. IMPLEMENTOS DE SEGURIDAD - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/implementos-seguridad
+### 3.4 ENERGIA (Costo Fijo)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/energia
 Content-Type: application/json
 
 {
-  "descripcion": "Cascos de seguridad",
-  "cantidad": 20,
-  "precio_unitario": 150.00,
-  "unidad": "pieza"
+  "descripcion": "Suministro eléctrico para campamento y operaciones",
+  "promedio": 1500,
+  "precio_unitario": 0.75,
+  "dias_trabajados": 90
 }
 
-### 12. IMPLEMENTOS DE SEGURIDAD - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/implementos-seguridad
-
-### 13. HERRAMIENTAS-OTROS - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/herramientas-otros
+### 3.5 HERRAMIENTAS Y OTROS (Costo Fijo)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/herramientas-otros
 Content-Type: application/json
 
 {
-  "descripcion": "Taladro industrial",
-  "promedio": 3,
-  "precio_unitario": 2500.00,
-  "dias_trabajados": 10
-}
-
-### 14. HERRAMIENTAS-OTROS - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/herramientas-otros
-
-### 15. EQUIPO-OTRO - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/equipo-otro
-Content-Type: application/json
-
-{
-  "descripcion": "Excavadora",
-  "cantidad": 1,
+  "descripcion": "Amortización de herramientas menores",
+  "promedio": 1,
   "precio_unitario": 15000.00,
   "dias_trabajados": 1
 }
 
-### 16. EQUIPO-OTRO - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/equipo-otro
-
-POST http://localhost:3000/api/proyectos/1/costos/local
+### 3.6 MATERIALES (Costo Variable)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/materiales
 Content-Type: application/json
 
 {
-  "descripcion": "Oficina temporal",
-  "promedio": 6,
-  "precio_unitario": 8000.00,
-  "dias_trabajados": 180
+  "descripcion": "Acero estructural A36",
+  "cantidad": 5000,
+  "unidad": "kg",
+  "precio_unitario": 2.50,
+  "cantidad_usado": 0
 }
 
-### 18. LOCAL - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/local
-
-POST http://localhost:3000/api/proyectos/1/costos/vigilancia
+### 3.7 IMPLEMENTOS DE SEGURIDAD (Costo Variable)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/implementos-seguridad
 Content-Type: application/json
 
 {
-  "descripcion": "Servicio de vigilancia 24h",
-  "promedio": 30,
-  "precio_unitario": 1200.00,
-  "dias_trabajados": 30
+  "descripcion": "Uniformes y EPP para 25 trabajadores",
+  "cantidad": 25,
+  "precio_unitario": 300.00,
+  "dias_trabajados": 1
 }
 
-### 20. VIGILANCIA - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/vigilancia
-
-### 21. ENERGIA - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/energia
+### 3.8 PETROLEO (Costo Variable)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/petroleo
 Content-Type: application/json
 
 {
-  "descripcion": "Energía eléctrica",
-  "promedio": 500,
-  "precio_unitario": 1.5,
-  "dias_trabajados": 30
+  "descripcion": "Diésel para maquinaria pesada",
+  "cantidad": 10000,
+  "precio_unitario": 15.50,
+  "dias_trabajados": 90
 }
 
-### 22. ENERGIA - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/energia
-
-### 23. PETROLEO - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/petroleo
+# @name crearGasolina
+### 3.9 GASOLINA (Costo Variable)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/gasolina
 Content-Type: application/json
 
 {
-  "descripcion": "Petróleo para maquinaria",
-  "cantidad": 1000,
-  "precio_unitario": 22.50,
-  "dias_trabajados": 30
+  "descripcion": "Gasolina para vehículos ligeros",
+  "cantidad": 2000,
+  "precio_unitario": 20.25,
+  "dias_trabajados": 90
 }
 
-### 24. PETROLEO - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/petroleo
+@gasolinaId = {{crearGasolina.response.body.data.id}}
 
-### 25. GASOLINA - Crear registro
-POST http://localhost:3000/api/proyectos/1/costos/gasolina
+### 3.10 TOPICO (Costo Variable)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/topico
 Content-Type: application/json
 
 {
-  "descripcion": "Gasolina para equipos",
-  "cantidad": 500,
-  "precio_unitario": 23.75,
-  "dias_trabajados": 30
+  "descripcion": "Insumos médicos para tópico",
+  "cantidad": 1,
+  "precio_unitario": 2000.00,
+  "dias_trabajados": 90
 }
 
-### 26. GASOLINA - Obtener por proyecto
-GET http://localhost:3000/api/proyectos/1/costos/gasolina
-
-### 27. Actualizar cualquier costo (ejemplo: mano de obra)
-PUT http://localhost:3000/api/proyectos/1/costos/mano-obra/1
+### 3.11 EQUIPO Y OTRO (Costo Variable)
+POST {{base}}/api/proyectos/{{proyectoId}}/costos/equipo-otro
 Content-Type: application/json
 
 {
-  "trabajador": "Operario Senior",
-  "cantidad_trabajador": 3,
-  "precio": 175.0,
-  "dias_trabajados": 12
+  "descripcion": "Alquiler de excavadora CAT 320D",
+  "cantidad": 1,
+  "precio_unitario": 800.00,
+  "dias_trabajados": 75
 }
 
-### 28. Eliminar cualquier costo (ejemplo: materiales)
-DELETE http://localhost:3000/api/proyectos/1/costos/materiales/1
+### =======================================================
+### 4. RESUMEN Y VERIFICACIÓN
+### =======================================================
 
-### 29. PROYECTOS - Eliminar proyecto
-DELETE http://localhost:3000/api/proyectos/1
+### 4.1 PROYECTOS - Actualizar resumen de costos explícitamente (aunque se actualiza tras cada costo)
+POST {{base}}/api/proyectos/{{proyectoId}}/actualizar-resumen
+
+### 4.2 PROYECTOS - Obtener resumen completo del proyecto
+GET {{base}}/api/proyectos/{{proyectoId}}/resumen
+
+### =======================================================
+### 5. ACTUALIZACIONES Y ELIMINACIONES DE PRUEBA
+### =======================================================
+
+### 5.1 MANO DE OBRA - Actualizar el registro creado
+PUT {{base}}/api/proyectos/{{proyectoId}}/costos/mano-obra/{{manoObraId}}
+Content-Type: application/json
+
+{
+  "trabajador": "Jefe de Proyecto (Senior)",
+  "cantidad_trabajador": 1,
+  "precio": 400.00,
+  "dias_trabajados": 90
+}
+
+### 5.2 GASOLINA - Eliminar el registro creado
+DELETE {{base}}/api/proyectos/{{proyectoId}}/costos/gasolina/{{gasolinaId}}
+
+### 5.3 PROYECTOS - Obtener resumen para verificar los cambios
+GET {{base}}/api/proyectos/{{proyectoId}}/resumen
+
+### =======================================================
+### 6. LIMPIEZA
+### =======================================================
+
+### 6.1 PROYECTOS - Eliminar proyecto y todos sus costos asociados
+DELETE {{base}}/api/proyectos/{{proyectoId}}
+
+### 6.2 PROYECTOS - Verificar que el proyecto fue eliminado
+GET {{base}}/api/proyectos/{{proyectoId}}
 
 ### NOTAS:
-# - Todos los endpoints de costos siguen el mismo patrón
-# - Los tipos de costo disponibles son: mano-obra, materiales, implementos-seguridad, 
-#   herramientas, equipos, local, vigilancia, transporte, combustible, varios
-# - Cada endpoint incluye validación automática
-# - Los totales se calculan automáticamente
-# - El resumen del proyecto incluye todos los costos agregados
+# - Este script recorre un ciclo completo: crear proyecto, agregar costos (todas las tablas),
+#   actualizar resumen, actualizar/eliminar costos, y limpiar.
+# - Se utilizan variables para encadenar IDs del proyecto y de costos creados.
+# - Todos los bodies cumplen las validaciones definidas en el middleware.
